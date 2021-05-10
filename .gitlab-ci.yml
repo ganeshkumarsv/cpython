@@ -1,0 +1,28 @@
+stages:
+  - binary_build
+
+variables:
+  DATADOG_AGENT_BUILDIMAGES: v4452649-b69b5d5
+
+build_binaries_x64:
+  stage: binary_build
+  tags: ["runner:windows-docker", "windowsversion:1809"]
+  variables:
+    ARCH: "x64"
+  script:
+    - $ErrorActionPreference = "Stop"
+    - '$_instance_id = (iwr  -UseBasicParsing http://169.254.169.254/latest/meta-data/instance-id).content ; Write-Host "Running on instance $($_instance_id)"'
+    - docker run --rm -v "$(Get-Location):c:\mnt" -e CI_JOB_ID=${CI_JOB_ID} -e WINDOWS_BUILDER=true -e AWS_NETWORKING=true -e TARGET_ARCH="$ARCH" 486234852809.dkr.ecr.us-east-1.amazonaws.com/ci/datadog-agent-buildimages/windows_1809_${ARCH}:${Env:DATADOG_AGENT_WINBUILDIMAGES} C:\mnt\build.bat
+    - copy PCBuild\*.dll ./
+    - copy PCBuild\*.exe ./
+    - copy PCBuild\*.lib ./
+    - copy PCBuild\*.pdb ./
+    - copy PCBuild\*.pyd ./
+    - get-childitem
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - python.exe
+      - python.pdb
+      - python27.lib
+      - python27.dll
