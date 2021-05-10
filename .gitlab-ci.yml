@@ -14,7 +14,7 @@ build_binaries_x64:
     - '$_instance_id = (iwr  -UseBasicParsing http://169.254.169.254/latest/meta-data/instance-id).content ; Write-Host "Running on instance $($_instance_id)"'
     - if (Test-Path build-out) { remove-item -recurse -force build-out }
     - docker run --rm -v "$(Get-Location):c:\mnt" -e CI_JOB_ID=${CI_JOB_ID} -e WINDOWS_BUILDER=true -e AWS_NETWORKING=true -e TARGET_ARCH="$ARCH" 486234852809.dkr.ecr.us-east-1.amazonaws.com/ci/datadog-agent-buildimages/windows_1809_${ARCH}:${Env:DATADOG_AGENT_WINBUILDIMAGES} C:\mnt\build.bat
-    - get-childitem
+    - get-childitem build-out
   artifacts:
     expire_in: 2 weeks
     paths:

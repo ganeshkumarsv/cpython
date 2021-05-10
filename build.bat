@@ -1,7 +1,8 @@
 if not exist c:\mnt\ goto nomntdir
 @echo c:\mnt found, continuing
-cd c:\mnt
+cd c:\mnt  || exit /b 2
 mkdir build-out
+if not exist build-out exit /b 3
 
 set platf=Win32
 
@@ -17,11 +18,12 @@ if "%TARGET_ARCH%" == "x86" (
 )
 
 msbuild .\PCbuild\python.vcxproj /p:Configuration=Release /p:Platform=%platf%
-cp .\PCbuild\*.dll build-out
-cp .\PCbuild\*.exe build-out
-cp .\PCbuild\*.lib build-out
-cp .\PCbuild\*.pdb build-out
-cp .\PCbuild\*.pyd build-out
+copy .\PCbuild\*.dll build-out || exit /b 4
+copy .\PCbuild\*.exe build-out || exit /b 5
+copy .\PCbuild\*.exp build-out || exit /b 6
+copy .\PCbuild\*.lib build-out || exit /b 7
+copy .\PCbuild\*.pdb build-out || exit /b 8
+copy .\PCbuild\*.pyd build-out || exit /b 9
 goto :EOF
 
 :nomntdir
