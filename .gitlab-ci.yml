@@ -18,7 +18,4 @@ build_binaries_x64:
   artifacts:
     expire_in: 2 weeks
     paths:
-      - build-out/python.exe
-      - build-out/python.pdb
-      - build-out/python27.lib
-      - build-out/python27.dll
+      - build-out/python-windows-2.7.18-x64.zip

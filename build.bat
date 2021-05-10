@@ -5,6 +5,7 @@ cd C:\mnt
 set platf=Win32
 set builddir=c:\mnt\PCBuild
 set outdir=c:\mnt\build-out
+set py_version=2.7.18
 
 mkdir %outdir%
 if not exist %outdir% exit /b 3
@@ -32,26 +33,35 @@ mkdir %outdir%\DLLs
 copy %builddir%\*.pyd %outdir%\DLLs || exit /b 4
 
 REM Copy include directory
-robocopy .\include %outdir%\include /MIR
+robocopy .\include %outdir%\include /MIR /NFL /NDL /NJH /NJS /nc /ns /np
 if %ERRORLEVEL% GEQ 8 exit /b 5
+copy PC\pyconfig.h %outdir%\include || exit /b 6
 
 REM Copy Lib directory
-robocopy .\Lib %outdir%\Lib /MIR /XF *.pyc /XD plat-aix3 plat-aix4 plat-atheos .\Lib\plat-beos5 .\Lib\plat-darwin .\Lib\plat-freebsd4 .\Lib\plat-freebsd5 .\Lib\plat-freebsd6 .\Lib\plat-freebsd7 .\Lib\plat-freebsd8 .\Lib\plat-generic .\Lib\plat-irix5 .\Lib\plat-irix6 .\Lib\plat-linux2 .\Lib\plat-mac .\Lib\plat-netbsd1 .\Lib\plat-next3 .\Lib\plat-os2emx .\Lib\plat-riscos .\Lib\plat-sunos5 .\Lib\plat-unixware7
-if %ERRORLEVEL% GEQ 8 exit /b 6
+robocopy .\Lib %outdir%\Lib /MIR /NFL /NDL /NJH /NJS /nc /ns /np /XF *.pyc /XD plat-aix3 plat-aix4 plat-atheos plat-beos5 plat-darwin plat-freebsd4 plat-freebsd5 plat-freebsd6 plat-freebsd7 plat-freebsd8 plat-generic plat-irix5 plat-irix6 plat-linux2 plat-mac plat-netbsd1 plat-next3 plat-os2emx plat-riscos plat-sunos5 plat-unixware7
+if %ERRORLEVEL% GEQ 8 exit /b 7
 
 REM Copy libs directory
 mkdir %outdir%\libs
-copy %builddir%\*.lib %outdir%\libs || exit /b 7
+copy %builddir%\*.lib %outdir%\libs || exit /b 8
 
 REM Copy files in root directory
-copy %builddir%\python27.dll %outdir% || exit /b 8
-copy %builddir%\python.exe %outdir% || exit /b 9
-copy %builddir%\pythonw.exe %outdir% || exit /b 10
+copy %builddir%\python27.dll %outdir% || exit /b 9
+copy %builddir%\python.exe %outdir% || exit /b 10
+copy %builddir%\pythonw.exe %outdir% || exit /b 11
 
 REM Generate import library
-gendef %builddir%\python27.dll
-dlltool --dllname python27.dll --def python27.def --output-lib libpython27.a
-copy libpython27.a %outdir%\libs
+gendef - %builddir%\python27.dll
+if "%TARGET_ARCH%" == "x64" (
+    dlltool -m i386:x86-64 --dllname python27.dll --def python27.def --output-lib libpython27.a
+)
+if "%TARGET_ARCH%" == "x86" (
+    dlltool -m i386 --as-flags=--32 --dllname python27.dll --def python27.def --output-lib libpython27.a
+)
+copy libpython27.a %outdir%\libs || exit /b 12
+
+REM Generate python zip
+7z a -r %outdir%\python-windows-%py_version%-%TARGET_ARCH%.zip %outdir%\*.*
 
 goto :EOF
 
