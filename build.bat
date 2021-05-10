@@ -1,17 +1,19 @@
 if not exist c:\mnt\ goto nomntdir
 @echo c:\mnt found, continuing
-cd c:\mnt  || exit /b 2
-mkdir build-out
-if not exist build-out exit /b 3
 
 set platf=Win32
-set outdir=
+set builddir=
+set outdir=c:\mnt\build-out
+
+cd c:\mnt\PCBuild  || exit /b 2
+mkdir %outdir%
+if not exist %outdir% exit /b 3
 
 if "%TARGET_ARCH%" == "x64" (
     @echo IN x64 BRANCH
     call %VSTUDIO_ROOT%\VC\Auxiliary\Build\vcvars64.bat
     set platf=x64
-    set outdir=amd64
+    set builddir=amd64
 )
 
 if "%TARGET_ARCH%" == "x86" (
@@ -19,13 +21,19 @@ if "%TARGET_ARCH%" == "x86" (
     call %VSTUDIO_ROOT%\VC\Auxiliary\Build\vcvars32.bat
 )
 
-msbuild .\PCbuild\python.vcxproj /p:Configuration=Release /p:Platform=%platf%
-dir .\PCbuild\%outdir%
-copy .\PCbuild\%outdir%\*.dll build-out || exit /b 4
-copy .\PCbuild\%outdir%\*.exe build-out || exit /b 5
-copy .\PCbuild\%outdir%\*.exp build-out || exit /b 6
-copy .\PCbuild\%outdir%\*.lib build-out || exit /b 7
-copy .\PCbuild\%outdir%\*.pdb build-out || exit /b 8
+msbuild pcbuild.sln /p:Configuration=Release /p:Platform=%platf%
+
+mkdir %outdir%\DLLs
+copy .\PCbuild\%builddir%\*.pyd %outdir%\DLLs || exit /b 4
+robocopy .\include %outdir%\include /s /e || exit /b 5
+robocopy .\Lib %outdir%\Lib /s /e || exit /b 6
+copy .\PCbuild\%builddir%\*.lib %outdir%\libs || exit /b 7
+copy .\PCbuild\%builddir%\python27.dll %outdir% || exit /b 8
+copy .\PCbuild\%builddir%\python.exe %outdir% || exit /b 9
+copy .\PCbuild\%builddir%\pythonw.exe %outdir% || exit /b 10
+cd %outdir%\libs
+gendef %outdir%\python27.dll
+dlltool --dllname python27.dll --def python27.def --output-lib libpython27.a
 goto :EOF
 
 :nomntdir
