@@ -53,10 +53,10 @@ copy %builddir%\pythonw.exe %outdir% || exit /b 11
 REM Generate import library
 gendef - %builddir%\python27.dll
 if "%TARGET_ARCH%" == "x64" (
-    dlltool -m i386:x86-64 --dllname python27.dll --def python27.def --output-lib libpython27.a
+    dlltool -m i386:x86-64 --dllname python27.dll --def %builddir%\python27.def --output-lib libpython27.a
 )
 if "%TARGET_ARCH%" == "x86" (
-    dlltool -m i386 --as-flags=--32 --dllname python27.dll --def python27.def --output-lib libpython27.a
+    dlltool -m i386 --as-flags=--32 --dllname python27.dll --def %builddir%\python27.def --output-lib libpython27.a
 )
 copy libpython27.a %outdir%\libs || exit /b 12
 
