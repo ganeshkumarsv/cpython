@@ -62,7 +62,7 @@ if "%TARGET_ARCH%" == "x86" (
 copy libpython27.a %outdir%\libs || exit /b 12
 
 REM Generate python zip
-7z a -r %outdir%\python-windows-%py_version%-%TARGET_ARCH%.zip %outdir%\*.*
+7z a -r %outdir%\python-windows-%py_version%-%TARGET_ARCH%.zip %outdir%\*
 
 goto :EOF
 
