@@ -26,7 +26,11 @@ call ridk enable
 
 REM First, get the required dependencies
 call .\PCBuild\get_externals.bat --organization python --no-tkinter --python 3.8
-call .\PCBuild\build.bat --no-tkinter -m -e -c Release -p %platf%
+
+REM -e: Build external libraries fetched by get_externals.bat
+REM Do not use -m (Enable parallel build) - the first build will fail since there may be a race condition
+REM with libraries needing pythoncore to be built
+call .\PCBuild\build.bat --no-tkinter -e -c Release -p %platf%
 
 REM Copy DLLs directory
 mkdir %outdir%\DLLs
