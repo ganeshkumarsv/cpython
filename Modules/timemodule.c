@@ -805,10 +805,10 @@ inittimezone(PyObject *m) {
      */
 #if defined(HAVE_TZNAME) && !defined(__GLIBC__) && !defined(__CYGWIN__)
     tzset();
-#ifdef PYOS_OS2
+#if defined(PYOS_OS2) || defined(MS_WIN64) || defined(MS_WINDOWS)
     PyModule_AddIntConstant(m, "timezone", _timezone);
 #else /* !PYOS_OS2 */
-    PyModule_AddIntConstant(m, "timezone", _timezone);
+    PyModule_AddIntConstant(m, "timezone", timezone);
 #endif /* PYOS_OS2 */
 #ifdef HAVE_ALTZONE
     PyModule_AddIntConstant(m, "altzone", altzone);
