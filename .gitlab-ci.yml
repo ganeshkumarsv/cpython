@@ -42,7 +42,7 @@ deploy_x64:
   rules:
     !reference [.manual]
   script:
-    - aws s3 cp --only-show-errors --region us-east-1 --sse AES256 --acl public-read build-out/python-windows-2.7.18-x64.zip s3://dd-agent-omnibus/python-windows-2.7.18-x64.zip"
+    - aws s3 cp --only-show-errors --region us-east-1 --sse AES256 --acl public-read build-out/python-windows-2.7.18-x64.zip s3://dd-agent-omnibus/test-python-windows-2.7.18-x64.zip"
 
 deploy_x86:
   stage: deploy
@@ -50,4 +50,4 @@ deploy_x86:
   rules:
     !reference [.manual]
   script:
-    - aws s3 cp --only-show-errors --region us-east-1 --sse AES256 --acl public-read build-out/python-windows-2.7.18-x86.zip s3://dd-agent-omnibus/python-windows-2.7.18-x86.zip"
+    - aws s3 cp --only-show-errors --region us-east-1 --sse AES256 --acl public-read build-out/python-windows-2.7.18-x86.zip s3://dd-agent-omnibus/test-python-windows-2.7.18-x86.zip"
