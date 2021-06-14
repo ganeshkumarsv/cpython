@@ -38,6 +38,7 @@ build_binaries_x86:
 
 deploy_x64:
   stage: deploy
+  tags: ["runner:main", "size:large"]
   needs: ["build_binaries_x64"]
   rules:
     !reference [.manual]
@@ -46,6 +47,7 @@ deploy_x64:
 
 deploy_x86:
   stage: deploy
+  tags: ["runner:main", "size:large"]
   needs: ["build_binaries_x86"]
   rules:
     !reference [.manual]
