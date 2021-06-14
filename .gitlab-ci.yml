@@ -20,24 +20,21 @@ variables:
     - if (Test-Path build-out) { remove-item -recurse -force build-out }
     - docker run --rm -v "$(Get-Location):c:\mnt" -e CI_JOB_ID=${CI_JOB_ID} -e WINDOWS_BUILDER=true -e AWS_NETWORKING=true -e TARGET_ARCH="$ARCH" 486234852809.dkr.ecr.us-east-1.amazonaws.com/ci/datadog-agent-buildimages/windows_1809_${ARCH}:${Env:DATADOG_AGENT_WINBUILDIMAGES} C:\mnt\build.bat
     - get-childitem build-out
+    - Get-FileHash -Algorithm SHA256 build-out/python-windows-2.7.18-${ARCH}.zip
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - build-out/python-windows-2.7.18-${ARCH}.zip
 
 build_binaries_x64:
   extends: .build_common
   variables:
     ARCH: "x64"
-  artifacts:
-    expire_in: 2 weeks
-    paths:
-      - build-out/python-windows-2.7.18-x64.zip
 
 build_binaries_x86:
   extends: .build_common
   variables:
     ARCH: "x86"
-  artifacts:
-    expire_in: 2 weeks
-    paths:
-      - build-out/python-windows-2.7.18-x86.zip
 
 deploy_x64:
   stage: deploy
