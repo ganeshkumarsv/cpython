@@ -109,7 +109,6 @@
     <ClCompile Include="$(opensslDir)ssl\t1_srvr.c" />
     <ClCompile Include="$(opensslDir)ssl\tls_srp.c" />
   </ItemGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="Clean" />
   <Target Name="CleanAll">
