@@ -4,13 +4,13 @@
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <!--
-    Use only MSVC 14.2, unless explicitly overridden
+    Use only MSVC 9.0, unless explicitly overridden
     -->
-    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v90</PlatformToolset>
     <!--
     Give a default for BasePlatformToolset as well, it's used by ICC and ignored otherwise
     -->
-    <BasePlatformToolset Condition="'$(BasePlatformToolset)' == '' and '$(PlatformToolset)' != 'v142'">v142</BasePlatformToolset>
+    <BasePlatformToolset Condition="'$(BasePlatformToolset)' == '' and '$(PlatformToolset)' != 'v90'">v90</BasePlatformToolset>
     <ICCBuild>false</ICCBuild>
     <ICCBuild Condition="$(PlatformToolset.StartsWith('Intel C++ Compiler'))">true</ICCBuild>
     <!--
